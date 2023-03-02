@@ -1,1 +1,2 @@
+eyes-playwright==5.15.1
 pytest-playwright==0.3.1
