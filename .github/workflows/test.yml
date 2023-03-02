@@ -25,6 +25,9 @@ jobs:
 
       - name: Install dependencies
         run: pip3 install -r requirements.txt
+      
+      - name: Install Playwright browsers
+        run: playwright install --with-deps
 
       - name: Execute tests
         run: python3 -m pytest -s -v tests
