@@ -22,7 +22,7 @@ from playwright.sync_api import Page
 #   They are hard-coded here to keep the example project simple.
 # --------------------------------------------------------------------------------
 
-USE_ULTRAFAST_GRID = False
+USE_ULTRAFAST_GRID = True
 
 
 # --------------------------------------------------------------------------------
