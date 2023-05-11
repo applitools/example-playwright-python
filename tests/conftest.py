@@ -12,7 +12,17 @@ import os
 import pytest
 
 from applitools.playwright import *
+from applitools.selenium.runner import EyesRunner
 from playwright.sync_api import Page
+
+
+# --------------------------------------------------------------------------------
+# Runner Settings
+#   These could be set by environment variables or other input mechanisms.
+#   They are hard-coded here to keep the example project simple.
+# --------------------------------------------------------------------------------
+
+USE_ULTRAFAST_GRID = False
 
 
 # --------------------------------------------------------------------------------
@@ -32,13 +42,18 @@ def api_key():
 @pytest.fixture(scope='session')
 def runner():
   """
-  Creates the runner for the Ultrafast Grid.
-  Concurrency refers to the number of visual checkpoints Applitools will perform in parallel.
+  Creates the runner for either the Ultrafast Grid or the Classic runner (local execution).
+  For UFG, concurrency refers to the number of visual checkpoints Applitools will perform in parallel.
   Warning: If you have a free account, then concurrency will be limited to 1.
   After the test suite finishes execution, closes the batch and report visual differences to the console.
   Note that it forces pytest to wait synchronously for all visual checkpoints to complete.
   """
-  run = VisualGridRunner(RunnerOptions().test_concurrency(5))
+  
+  if USE_ULTRAFAST_GRID:
+    run = VisualGridRunner(RunnerOptions().test_concurrency(5))
+  else:
+    run = ClassicRunner()
+  
   yield run
   print(run.get_all_test_results())
 
@@ -70,16 +85,19 @@ def configuration(api_key: str, batch_info: BatchInfo):
   # then the SDK will automatically read the `APPLITOOLS_API_KEY` environment variable to fetch it.
   config.set_api_key(api_key)
 
-  # Add 3 desktop browsers with different viewports for cross-browser testing in the Ultrafast Grid.
-  # Other browsers are also available, like Edge and IE.
-  config.add_browser(800, 600, BrowserType.CHROME)
-  config.add_browser(1600, 1200, BrowserType.FIREFOX)
-  config.add_browser(1024, 768, BrowserType.SAFARI)
+  # If running tests on the Ultrafast Grid, configure browsers.
+  if USE_ULTRAFAST_GRID:
 
-  # Add 2 mobile emulation devices with different orientations for cross-browser testing in the Ultrafast Grid.
-  # Other mobile devices are available, including iOS.
-  config.add_device_emulation(DeviceName.Pixel_2, ScreenOrientation.PORTRAIT)
-  config.add_device_emulation(DeviceName.Nexus_10, ScreenOrientation.LANDSCAPE)
+    # Add 3 desktop browsers with different viewports for cross-browser testing in the Ultrafast Grid.
+    # Other browsers are also available, like Edge and IE.
+    config.add_browser(800, 600, BrowserType.CHROME)
+    config.add_browser(1600, 1200, BrowserType.FIREFOX)
+    config.add_browser(1024, 768, BrowserType.SAFARI)
+
+    # Add 2 mobile emulation devices with different orientations for cross-browser testing in the Ultrafast Grid.
+    # Other mobile devices are available, including iOS.
+    config.add_device_emulation(DeviceName.Pixel_2, ScreenOrientation.PORTRAIT)
+    config.add_device_emulation(DeviceName.Nexus_10, ScreenOrientation.LANDSCAPE)
 
   # Return the configuration object
   return config
@@ -93,12 +111,12 @@ def configuration(api_key: str, batch_info: BatchInfo):
 
 @pytest.fixture(scope='function')
 def eyes(
-  runner: VisualGridRunner,
+  runner: EyesRunner,
   configuration: Configuration,
   page: Page,
   request: pytest.FixtureRequest):
   """
-  Creates the Applitools Eyes object connected to the VisualGridRunner and set its configuration.
+  Creates the Applitools Eyes object connected to the runner and set its configuration.
   Then, opens Eyes to start visual testing before the test, and closes Eyes at the end of the test.
   
   Opening Eyes requires 4 arguments:
