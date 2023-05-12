@@ -1,4 +1,4 @@
-# Applitools Example: Playwright Python
+# Applitools Example: Playwright in Python
 
 This is the example project for the [Playwright Python tutorial](https://applitools.com/tutorials/quickstart/web/playwright/python).
 It shows how to start automating visual tests
