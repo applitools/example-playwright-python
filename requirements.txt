@@ -1,2 +1,2 @@
-eyes-playwright==5.15.1
-pytest-playwright==0.3.1
+eyes-playwright==5.18.0
+pytest-playwright==0.3.3
