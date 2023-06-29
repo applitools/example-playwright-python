@@ -141,7 +141,7 @@ def eyes(
     driver=page,
     app_name='ACME Bank Web App',
     test_name=request.node.name,
-    viewport_size=RectangleSize(1024, 768))
+    viewport_size=RectangleSize(1200, 600))
   
   yield eyes
   eyes.close_async()
