@@ -12,7 +12,6 @@ import os
 import pytest
 
 from applitools.playwright import *
-from applitools.selenium.runner import EyesRunner
 from playwright.sync_api import Page
 
 
@@ -113,7 +112,7 @@ def configuration(api_key: str, batch_info: BatchInfo):
 
 @pytest.fixture(scope='function')
 def eyes(
-  runner: EyesRunner,
+  runner,
   configuration: Configuration,
   page: Page,
   request: pytest.FixtureRequest):
