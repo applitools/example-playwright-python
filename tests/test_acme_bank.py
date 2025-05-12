@@ -17,4 +17,4 @@ def test_log_into_bank_account(page: Page, eyes: Eyes) -> None:
 
   # Verify the full main page loaded correctly.
   # This snapshot uses LAYOUT match level to avoid differences in closing time text.
-  eyes.check(Target.window().fully().with_name("Main page").layout())
+  eyes.check(Target.window().fully().with_name("Main page"))
